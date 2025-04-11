@@ -69,7 +69,7 @@ Considera la red del club de Karate de Zachary. [Acá](https://en.wikipedia.org/
 
 ```{r message=FALSE, warning=FALSE}
 library(igraph)
-karate<-make_graph("Zachary")
+karate <- make_graph("Zachary")
 ```
 
 -   ¿Cuántos nodos y conexiones tiene?
@@ -154,14 +154,12 @@ Sí, existen
 # visualización de la gráfica 
 plot(karate, main = "Gráfica karate") #para saber seleccionar los hubs
 
-sort(degree(karate), decreasing = TRUE)
-
-degree()
-closeness()
-betweenness()
+#Elijo sort para que calcule mayor a menor
+sort (degree(karate), decreasing = TRUE)
+sort (betweenness(karate), decreasing = TRUE)
+sort (closeness(karate), decreasing = TRUE)
 
 ```
-
 
 
 **Explica e interpreta tus resultados**.
