@@ -148,8 +148,19 @@ Sí, existen
 ###nodos con coeficiente de clusterización igual a 1. Esto significa que esos nodos están completamente conectados con todos sus vecinos. En otras palabras, si un nodo tiene un coeficiente de clusterización de 1, cada uno de los nodos con los que está directamente conectado también están conectados entre sí, formando un triángulo perfecto o una subred completamente conectada
 
 
-
 -   Mide , con al menos tres medidas de centralidad, los nodos más importantes.
+```{r}
+
+# visualización de la gráfica 
+plot(karate, main = "Gráfica karate") #para saber seleccionar los hubs
+
+sort(degree(karate), decreasing = TRUE)
+
+degree()
+closeness()
+betweenness()
+
+```
 
 
 

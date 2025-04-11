@@ -28,12 +28,17 @@ dist_con
 
 ##Calcula el diámetro, la matriz de distancias y la distancia promedio
 diameter(karate)
-
+adj_mat <- as.matrix (get.adjacency (karate) )
+adj_mat <- as.matrix (get.adjacency (karate) )
+adj_mat
 mean_distance(karate)
 
-##Encuentra la trayectoria de los nodos más alejados.
+## Encuentra la trayectoria de los nodos más alejados.
+#sort ((get_diameter (karate)), decreasing = TRUE )}
 
-##Existen nodos con coefeiciente de clusterización 1. ¿Qué significa?
+get_diameter (karate)
+
+##Existen nodos con coeficiente de clusterización 1. ¿Qué significa?
 
 
 ##Mide, con al menos tres medidas de centralidad, los nodos más importantes
