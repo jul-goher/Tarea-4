@@ -1,6 +1,6 @@
 ---
 title: "Tarea 4 Genómica Funcional 2025"
-author: "Roberto Álvarez"
+author: "Julieta González"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   html_document: 
@@ -73,15 +73,85 @@ karate<-make_graph("Zachary")
 ```
 
 -   ¿Cuántos nodos y conexiones tiene?
+```{r}
+karate
+
+```
+IGRAPH fcc9838 U--- 34 78 -- Zachary
+Indica una red U - undirected (no dirigida) de 34 nodos y 78 conexiones 
+
 -   ¿Quiénes son los nodos y cuál es la regla de conexión?
+
+Los nodos son los miembros del club de karate, y la regla de conexión son las interacciones sociales fuera  entre los miembros 
+
 -   ¿Qué tan densa es la red?
+
+```{r}
+edge_density (karate)
+
+```
+13.9% 
+A density of 13.9% suggests that the graph is fairly sparse, meaning only a small fraction of all possible relationships between members exist.
+
+This reflects the realistic social structure of the karate club, where not all members are socially connected to one another.
+
+
 -   ¿Cómo obtienes la matriz de adyacencia?
+```{r}
+adj_mat <- as.matrix (get.adjacency (karate) )
+adj_mat
+
+```
+
+La matriz de adyacencia se obtiene asignando un nodo a cada miembro de la red. Según la interacción entre nodos se llena la matriz, el 1 indica una conexión, mientras que la ausencia de  interacción se denota con un 0.
+
 -   ¿Es una red dirigida, pesada?
+
+Es una red no dirigida, según lo indicado por su identificador `#IGRAPH fcc9838 U--- 34 78 -- Zachary`
+
 -   Calcula y gráfica la distribución de conectividades
+```{r}
+
+#Calculo de distribución de conectividades
+degree(karate)
+#Gráfica
+dist_con <- hist(degree(karate), col="seagreen", main = "Distribución del grado")
+dist_con
+
+```
+
 -   Calcula el diámetro, la matriz de distancias y la distancia promedio
+```{r}
+# Diámetro 
+diameter (karate)
+# Matriz de distancias
+dist_mat <- distances (karate)
+# Distancia promedio
+mean_distance (karate)
+
+```
+
 -   Encuentra la trayectoria de los nodos más alejados.
--   Existen nodos con coefeiciente de clusterización 1. ¿Qué significa?
+
+```{r}
+get_diameter (karate)
+#Da la secuencia de nodos que forman el diámetro
+
+```
+
+-   Existen nodos con coeficiente de clusterización 1. ¿Qué significa?
+```{r}
+transitivity (karate, type = "local")
+```
+Sí, existen 
+
+###nodos con coeficiente de clusterización igual a 1. Esto significa que esos nodos están completamente conectados con todos sus vecinos. En otras palabras, si un nodo tiene un coeficiente de clusterización de 1, cada uno de los nodos con los que está directamente conectado también están conectados entre sí, formando un triángulo perfecto o una subred completamente conectada
+
+
+
 -   Mide , con al menos tres medidas de centralidad, los nodos más importantes.
+
+
 
 **Explica e interpreta tus resultados**.
 
@@ -90,7 +160,9 @@ karate<-make_graph("Zachary")
 A partir de la red de amigues que vimos en clase, en su versión no ponderada, contesta lo siguiente:
 
 -   Escribe una función que calcule el número de amigos que tiene cualquier persona arbitraria y lo compare con el número de los amigos de estos.
+
 -   Escribe una función que te de la trayectoria más larga entre dos nodos arbitrarios de la red.
+
 -   Encuentra las dos personas más populares.
 
 3.  **Red PPI**
