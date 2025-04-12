@@ -14,8 +14,8 @@ output:
       smooth_scroll: yes
   pdf_document:
     toc: yes
-  word_document:
-    toc: yes
+  #word_document:
+    #toc: yes
   #html_notebook: 
     #number_sections: yes
     #toc: yes
@@ -167,6 +167,31 @@ plot(fg, main = "Grafo F")
 
 ```{r}
 #Propiedades 
+prop_graf <- function(grafica) {
+  num_nodos <- vcount(grafica)
+  num_conexiones <- ecount(grafica)
+  grados <- degree(grafica, mode = "all")
+  promedio_grado <- mean(grados)
+  distribucion_grado <- degree_distribution(grafica, mode = "all")
+  densidad <- edge_density(grafica)
+  matriz_adyacencia <- as.matrix(as_adjacency_matrix(grafica))
+  matriz_distancias <- distances(grafica)
+  diametro <- diameter(grafica)
+  nodos_distantes <- ends(grafica, get.diameter(grafica))
+  cc <- transitivity(grafica, type = "local")
+  
+  cat("Nodos:", num_nodos, "\n")
+  cat("Conexiones:", num_conexiones, "\n")
+  cat("Promedio degree:", promedio_grado, "\n")
+  cat("Densidad:", densidad, "\n")
+  cat("Diámetro:", diametro, "\n")
+  cat("Nodos distantes:", nodos_distantes, "\n")
+  cat("Coeficiente de clusterización promedio:", cc, "\n")
+}
+
+#Evaluar gráficas
+
+prop_graf(ag)
 
 
 ```
@@ -364,7 +389,6 @@ igraph::upgrade_graph(yeast)
 -   Encuentre qué tipo de distribución de conectividades tiene. Haz un ajuste en log-log para ver que tipo de distribución podría ser.
 
 
-
 -   Encuentra las diez proteínas más conectadas
 ```{r}
 
@@ -534,7 +558,7 @@ Construye dos redes:
 ```{r}
 #Erdos-Rényi
 g_er <- sample_gnp (100, p = 0.5)
-#Scale-free, 
+#Scale-free
 g_ba <- sample_pa (100 , directed = FALSE)
 
 ```
@@ -565,12 +589,9 @@ comparacion(g_ba)
 
 
 -   Interpreta las diferencias en el contexto de redes biológicas.
-Las redes biológicas
+La red Erdos-Rényi permite seleccionar una probabilidad de unión entre nodos, que nos dio al final un grado promedio de 48.9, lo que significa que los nodos, en promedio, hacen la mitad de sus posibles conexiones. En un contexto biológico, esto sería dificil de observar, pues, por ejemplo, en interacciones proteína-proteína, pocos nodos no tienen un alto  nivel de conexiones, como lo que se observó en la base de datos yeast, que cuenta con una densidad de ~0.003. Esto es observable para el grado promedio de la red Scale-free, donde hay una baja conexión entre nodos, con unos pocos nodos de conectividad alta para la formación de los hubs, los cuales son observables al analizar la distribución de grados. 
 
+Debido a que las uniones entre nodos vecinos son tan escasas entre sí en la red Scale-free, el coeficiente de clústering promedio resulta ser 0, por lo que no podríamos esperar grupos estrechamente unidos entre sí, lo que también es conformado por diámetro, que denota una trayectoria larga entre nodos. Por otro lado, el valor del coeficiente de clústering para Erdos-Rényi indican que hay un cierto nivel de clústering, por lo que podríamos esperar ver algunos grupos de nodos, puesto que los nodos vecinos tienen una mayor probabilidad de conectarse entre sí, por lo que podemos ver un número de diámatro pequeño (2). 
 
-Una matriz scale-free tiende ser más estable contra ataques dirigidos 
-
-Distribución de grados, donde vemos que 
-
-
+Esto nos deja ver que las redes scale-free se aproximan más a las redes que vemos en la realidad, donde se refleja mejor la presencia de hubs, que a su vez brindan robustez al modelo, que es lo que esperaríamos ver en procesos biológicos como las interacciones entre proteínas o vías metabólicas, las cuales sabemos son bastante complejas. 
 
