@@ -581,6 +581,19 @@ close_mouse <- closeness(mouse, mode = "all") #all como en el degree
 
 #Código: https://www.datacamp.com/tutorial/centrality-network-analysis-R
 
+#Realizar un layout para todos:
+layout_mouse <- layout_with_fr(mouse)
+
+# Gráficas
+#Degree 
+plot (mouse, layout = layout_mouse, main = "Centralidad: degree" )
+
+#Betweenness 
+plot (mouse, layout = layout_mouse,main = "Centralidad: betweenness" )
+
+# Closeness Centrality
+plot (mouse, layout = layout_mouse, main = "Centralidad: closeness" )
+
 
 ```
 
@@ -592,7 +605,25 @@ edge_density(mouse)
 ```
 
 -   Clusteriza la red con al menos tres métodos de clusterización. Gráfica la red con esos métodos.
+```{r}
 
+#Código: https://stackoverflow.com/questions/44372499/igraph-split-graph-into-clusters
+
+#Edge-betweeness
+get.data.frame(mouse)
+eb_mouse <- edge.betweenness.community(mouse, weights = E(mouse)$value, directed = FALSE, bridges=TRUE)
+plot(eb_mouse, mouse, main = "Método Edge Betweeness")
+
+#Optimal Cluster
+oc_mouse <- cluster_optimal(mouse, weights = E(mouse)$value)
+plot(oc_mouse, mouse, main = "Método Optimal Cluster")
+
+#Infomaps
+infomap_mouse <- cluster_infomap(mouse, e.weights = E(mouse)$value)
+plot(infomap_mouse, mouse, main = "Método Infomap")
+
+```
+El algoritmo Infomap detecta a toda la red mouse en una misma comunidad, probablemente por lo inetrconectada que está la red, mientras que los otros dos métodos si permiten diferenciar distintos clústeres. 
 
 
 5.  **Red de coexpresión simulada**
