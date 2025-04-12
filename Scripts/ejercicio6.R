@@ -24,7 +24,7 @@ comparacion <- function(graf) {
   g_dist <- degree_distribution(graf) 
   cc <- transitivity(graf, type = "average") #supongo que en este caso el promedio e smejor que el local 
   diam <- diameter(graf)
-
+  
   cat("Grado promedio:", g_prom, "\n")
   cat("Distribución de grados:", g_dist, "\n")
   cat("CC promedio:", cc, "\n")
