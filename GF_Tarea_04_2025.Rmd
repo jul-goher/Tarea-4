@@ -29,7 +29,11 @@ editor_options:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+library(igraph)
+
 ```
+
 
 # Tarea 4
 
@@ -37,17 +41,88 @@ knitr::opts_chunk$set(echo = TRUE)
 
 1.  Considera una red de 15 nodos . Considera que tienes una sola conexión. ¿Cuál es el número máximo de nodos que puedes conectar? Dado un solo nodo , ¿cuál es el número máximo conexiones que puede tener tal nodo?
 
+Puesto que sólo hay una conexión, esta entonces une a dos nodos, por lo que el número máximo de nodos que se pueden conectar es 2 (A->B). 
+El número máximo de conexiones que puede tener un nodo no puede ser mayor al número de nodos total, por lo que el número máximo que puede tener un nodo en este caso es de 15-1 = 14; 14 nodos.
+
 2.  Considera una red dirigida de 10 nodos. Usa 25 conexiones y dibuja una red con ese número de nodos y conexiones dirigidas. Calcula la distribución de conectividades de salida.Calcula el número total de conexiones de salida ¿Cómo se compara el número total de de conectividades de entrada (son iguales, diferentes)? Explica tu respuesta. Calcula el promedio de entrada y de salida. Discute tu resultado.
+
+```{r}
+g <- make_empty_graph ( n= 10, directed = TRUE)
+
+conex <- sample(1:10, 50, replace = TRUE) #para 25 conexiones necesito 50 números, porque van en pares
+conex
+
+#le pedía a la IA que les pusiera coma entre los 50 números para volverlos a guardar en el vector
+conex <- c(7, 6, 10, 2, 7, 2, 6, 5, 8, 10, 4, 9, 10, 6, 4, 7, 2, 7, 3, 2, 6, 9, 5, 5, 6, 2, 3, 10, 7, 3, 5, 4, 4, 4, 10, 9, 2, 3, 3, 1, 5, 9, 1, 5, 5, 10, 3, 2, 10, 1)
+g <- add_edges (g, conex)
+plot(g, main = "Red dirigida")
+
+d <- degree(g, mode = "in")
+mean(d)
+
+d2 <- degree(g, mode = "out")
+mean(d2)
+
+```
+Para los promedios de grado de salida y entrada se obtuvo un valor de 2.5. Esto sucede porque al tener 25 conexiones, el número total del grado es 25. Entonces hay 25 conexiones "salientes"  (out) y 25 "entrantes"  (in), y como hay 10 nodos, lo que se hace para calcular la media es 25/10, que es igual a 2.5. 
+Aunque en primeria instancia se podría pensar que los loops hacia su mismo nodo afectan el degree de entrada y salida de un nodo,  en este caso el promedio se mantuvo estable incluso con la presencia de estos. Los self-loops pueden afectar el grado del nodo de origen al agregarle +1 para el grado in  y out, y dependiendo del contexto, estos deben o no ser removidos, como en el caso de la red de amigos, donde se tuvieron que remover los self-loops generados por aquellos que se eligieron como su propio amigo.
+
 
 3.  Considera una red no dirigida de $n=3,4,5,6$ nodos respectivamente. ¿Cuál es el número máximo de conexiones que puedes poner? Dibuja cada caso. ¿Qué pasa si la red es dirigida?
 
-4.  Considera tu red de amigos reales.¿ Cuál es tu coeficiente de clusterización?
+El número máximo de conexiones que se puede poner sin que un nodo se diriga a sí mismo es calculado mediante k(k-1)/2.
+
+```{r}
+
+max_conex <- function (x) { #x representa el número de nodos
+    max <- (x*(x-1))/2
+  return (max) #
+}
+
+#Máximo número de conexiones posibles
+max_conex(3)
+max_conex(4)
+max_conex(5)
+max_conex(6)
+
+```
+_No puede añadir el dibujo, pero está en la carpeta de Ejercicios como dibujo.png_
+En su lugar añado el código:
+
+```{r}
+
+for (i in 3:6) {
+  gr <- make_full_graph(i, directed = FALSE)
+  cat("Número de nodos:", i, "\n")
+  cat("Máximo número de conexiones para una red de", i, "nodos:", max_conex(i), "\n")
+  plot(gr, main = paste("Gráfica para n =", i))
+}
+
+```
+
+
+En caso de tratarse de redes dirigidas, el número de conexiones máximas se vería modificado, mostrando un aumento ya que al añadirle una conexión dirigida, se estaría adicionando un enlace por cada par de nodos en cada dirección, por lo que el número de conexiones máximas aumenta. Esto ejemplifica la naturaleza simétrica de las redes no dirigidas y la asimetría en las dirigidas, pues las redes no dirigidas sugieren nua  relación mutua en la unión de los nodos, muestras que en las dirigidas existe una dirección específica donde existe un flujo.
+
+
+```{r}
+
+for (i in 3:6) {
+  gr <- make_full_graph (i, directed = TRUE)
+  cat ("Máximo número de conexiones para una red de", max_conex(i), "nodos", "\n")
+  plot(gr, main = paste ("Gráfica para n =", i))
+}
+
+```
+
+4.  Considera tu red de amigos reales. ¿Cuál es tu coeficiente de clusterización?
+Mi coeficiente de clusterización en la red de amigos reales se referiría a cuáles de mis amigos son amigos entre sí. Este sería mucho menor al calculado en la red de amigos, ya que, a diferencia de la escuela, las distintas personas con las que socializamos pertenecen a diferentes entornos donde no tienen la oportunidad de convivir entre sí. 
+
 
 ## (80 % ) Scripts, código, texto y gráficas
 
 1.  **Propiedades básicas de redes**
 
-A partir de las siguientes redes calcula manualmente las siguientes propiedades de cada red ![Redes](~/Desktop/Redes.png){width="20cm" height="20cm"}
+A partir de las siguientes redes calcula manualmente las siguientes propiedades de cada red 
 
 -   Número de conexiones
 -   Número de nodos
@@ -63,13 +138,25 @@ A partir de las siguientes redes calcula manualmente las siguientes propiedades 
 
 Después escribe código en R que genere las gráficas de las redes y que calcule las propiedades anteriores para cada red.
 
+*Ejercicios a mano se encuentran en la carpeta ejercicios dentro del pdf con el mismo nombre*
+
+
+
+```{r}
+
+```
+
+
+
 1.  **Karate**
 
 Considera la red del club de Karate de Zachary. [Acá](https://en.wikipedia.org/wiki/Zachary%27s_karate_club) puedes leer sobre eso. En igraph la gráfica está precargada
 
 ```{r message=FALSE, warning=FALSE}
 library(igraph)
-karate <- make_graph("Zachary")
+
+karate <- make_graph ("Zachary")
+
 ```
 
 -   ¿Cuántos nodos y conexiones tiene?
@@ -90,11 +177,6 @@ Los nodos son los miembros del club de karate, y la regla de conexión son las i
 edge_density (karate)
 
 ```
-13.9% 
-A density of 13.9% suggests that the graph is fairly sparse, meaning only a small fraction of all possible relationships between members exist.
-
-This reflects the realistic social structure of the karate club, where not all members are socially connected to one another.
-
 
 -   ¿Cómo obtienes la matriz de adyacencia?
 ```{r}
@@ -107,7 +189,7 @@ La matriz de adyacencia se obtiene asignando un nodo a cada miembro de la red. S
 
 -   ¿Es una red dirigida, pesada?
 
-Es una red no dirigida, según lo indicado por su identificador `#IGRAPH fcc9838 U--- 34 78 -- Zachary`
+Es una red no dirigida, según lo indicado por su identificador `#IGRAPH fcc9838 U---` (U de uniderected)
 
 -   Calcula y gráfica la distribución de conectividades
 ```{r}
@@ -134,7 +216,8 @@ mean_distance (karate)
 -   Encuentra la trayectoria de los nodos más alejados.
 
 ```{r}
-get_diameter (karate)
+
+sort( (get_diameter (karate)), decreasing = TRUE)
 #Da la secuencia de nodos que forman el diámetro
 
 ```
@@ -143,10 +226,7 @@ get_diameter (karate)
 ```{r}
 transitivity (karate, type = "local")
 ```
-Sí, existen 
-
-###nodos con coeficiente de clusterización igual a 1. Esto significa que esos nodos están completamente conectados con todos sus vecinos. En otras palabras, si un nodo tiene un coeficiente de clusterización de 1, cada uno de los nodos con los que está directamente conectado también están conectados entre sí, formando un triángulo perfecto o una subred completamente conectada
-
+Los nodos con coeficiente de cluesterización igual a 1 demustran que cada uno de los nodos a los que está conectado también están conectados entre sí. 
 
 -   Mide , con al menos tres medidas de centralidad, los nodos más importantes.
 ```{r}
@@ -155,9 +235,9 @@ Sí, existen
 plot(karate, main = "Gráfica karate") #para saber seleccionar los hubs
 
 #Elijo sort para que calcule mayor a menor
-sort (degree(karate), decreasing = TRUE)
-sort (betweenness(karate), decreasing = TRUE)
-sort (closeness(karate), decreasing = TRUE)
+head ( sort (degree(karate), decreasing = TRUE), 5)
+head ( sort (betweenness(karate), decreasing = TRUE), 5)
+head ( sort (closeness(karate), decreasing = TRUE), 5) 
 
 ```
 
@@ -166,38 +246,248 @@ sort (closeness(karate), decreasing = TRUE)
 
 2.  **Amigues**
 
+```{r}
+#Cargar la red 
+g2 <- read.csv ("C:/Users/julie/OneDrive/Escritorio/R/Genómica Funcional/Tarea 4/Data/adjacency_matrix.csv")
+rownames(g2)<-g2[,1]
+g2 <- g2[,-1]
+g2 <- as.matrix(g2)
+diag(g2)<-0
+red <- graph_from_adjacency_matrix(g2)
+
+```
+
 A partir de la red de amigues que vimos en clase, en su versión no ponderada, contesta lo siguiente:
 
 -   Escribe una función que calcule el número de amigos que tiene cualquier persona arbitraria y lo compare con el número de los amigos de estos.
 
+```{r}
+
+amigos_de_amigos <- function (persona) {
+  sus_amigos <- neighbors(red, persona, mode = "out")
+  num_amigos <- length(sus_amigos)
+  #Del ejemplo en la práctica sapply(networks, function(g) transitivity(g, type = "global"))
+  amigos_de_amigos <- sapply ( sus_amigos, function(ami) length(neighbors (red, ami, mode = "out")) )
+  
+
+  cat ("Amigos de la persona:", num_amigos, "\n")
+  cat ("Amigos de sus amigos:", amigos_de_amigos, "\n")
+  
+}
+
+#Comprobar la función
+amigos_de_amigos("JULIETA")
+
+```
+
+
 -   Escribe una función que te de la trayectoria más larga entre dos nodos arbitrarios de la red.
+```{r}
+
+trayectoria_larga <- function (persona1, persona2) {
+  #Calcular los trayectos
+  trayectos <- all_simple_paths (red, from = persona1, to =persona2, mode = "all" )
+  #Añado all porque in y out no los calcula
+  #Calcular la longitud de los paths
+  long_trayectos <- sapply (trayectos, function (tray) length (tray) - 1 )
+  #Añadí el -1 porque lo que da es el número de nodos, si se resta 1 da la conexión entre estos
+  max_trayecto <- trayectos[[which.max(long_trayectos)]]
+  #Trayectos guarda la secunia de nodos y long_trayectos la longitud
+  max_long <- max(long_trayectos)
+  
+  cat("Máximo trayecto:", paste(max_trayecto, collapse = " -> "), "\n") #Colapse permite que se muestren en serie añadiendo la flecha -> hace más entendible el trayecto
+  cat ("Longitud máxima:", max_long)
+  
+}
+
+
+trayectoria_larga ("JULIETA", "BLANCA")
+
+```
 
 -   Encuentra las dos personas más populares.
+
+```{r}
+
+#Las personas más populares serían las que más personas consideran su amigo/a. Por lo que se calcula el grado en modo "in".
+popularidades <- degree(red, mode = "in")
+#Acomodar en función de su popularidad, de mayor a menor
+sort(popularidades, decreasing = TRUE)
+
+```
 
 3.  **Red PPI**
 
 A partir de la red de interacción proteína-proteína (PPI) de la levadura que se encuentra en la bilbioteca `igraphdata` Elabora un script que conteste lo siguiente:
 
--   Encuentre qué tipo de distribución de conectividades tiene. Haz un ajuste en log-log para ver que tipo de distribución podría ser.
--   Encuentra las diez proteínas más conectadas
--   Calcula el diámetro y promedio de las distancias
--   Crea una función que, a partir de eliminar al azar un noodo de la red genere el promedio d elas distancias después de eliminar $n=1,2,3,\ldots, 100$ nodos al azar
--   Crea una función que elimine las proteínas más conectadas y calcule el promedio de las distancias cad vez que se remueve un nodo.
--   Calcula el proemdio del coeficiente de clusterización. ¿Hay proteínas que tengan un coeficiente de clusterización de 1? Eso qué significa.
+```{r}
+#Supuse que la base de datos era la única llamada yeast en la guía de igraphdata
+#https://cran.r-project.org/web/packages/igraphdata/igraphdata.pdf
 
-Discute tus resultados.
+#Instalar la libería
+install.packages("igraphdata")
+library(igraphdata)
+
+#Cargar el dataset
+data (yeast)
+#Pide actualizar la base de datos
+igraph::upgrade_graph(yeast)
+
+```
+
+
+-   Encuentre qué tipo de distribución de conectividades tiene. Haz un ajuste en log-log para ver que tipo de distribución podría ser.
+
+
+
+-   Encuentra las diez proteínas más conectadas
+```{r}
+
+head ( sort (degree(yeast, mode = "total"), decreasing = TRUE), 10)
+
+```
+
+-   Calcula el diámetro y promedio de las distancias
+```{r}
+diameter(yeast)
+mean_distance (yeast)
+
+```
+
+-   Crea una función que, a partir de eliminar al azar un nodo de la red genere el promedio d elas distancias después de eliminar $n=1,2,3,\ldots, 100$ nodos al azar
+
+```{r}
+#Función para deleciones sucesivas
+delecion_sucesiva <- function (grafica, num_deleciones) {
+  dist_inicial <-  mean_distance(grafica)
+  dist_final <- num_deleciones
+  graf_modif <- grafica
+  
+  for (i in 1:num_deleciones) { 
+    #Sample de los nodos, al azar
+    #En vez de 
+    samp <- sample (1:(length (graf_modif)), 1, replace = FALSE)
+    #deleciones
+    graf_modif <- delete_vertices (graf_modif, samp)
+    #Guardar deleciones
+  }
+  
+  dist_final <- mean_distance(graf_modif)
+  
+  cat ("Distancia promedio inicial:", dist_inicial, "\n")
+  cat ("Distancia promedio final:", dist_final)
+}
+
+y2 <- yeast
+delecion_sucesiva (y2, 400)
+
+
+```
+
+
+-   Crea una función que elimine las proteínas más conectadas y calcule el promedio de las distancias cada vez que se remueve un nodo.
+
+```{r}
+
+delecion_conect <- function (grafica, num_deleciones) {
+  graf_modif <- grafica   #gráfica inicial para irle haciendo las iteraciones
+  dist_inicial <- mean_distance(grafica)
+  #Definir los nodos (proteínas) más conectadas según el degree total 
+  prot_conect <- degree(graf_modif, mode = "total") 
+  #elegir el nodo más conectado
+  nodo_mas_conectado <- which.max(prot_conect)
+  
+  for (i in 1:num_deleciones) { 
+    graf_modif <- delete_vertices (graf_modif, nodo_mas_conectado)
+  }
+  
+  dist_final <- mean_distance (graf_modif)
+  
+  cat ("Distancia promedio inicial:", dist_inicial, "\n")
+  cat ("Distancia promedio final:", dist_final)
+}
+
+y3 <- yeast
+delecion_conect(y3, 400) 
+
+
+```
+
+
+-   Calcula el promedio del coeficiente de clusterización. ¿Hay proteínas que tengan un coeficiente de clusterización de 1? Eso qué significa.
+
+```{r}
+
+#Promedio CC
+y_cc <- transitivity(yeast,type = "local")
+prom_cc <- mean(y_cc, na.rm = TRUE) 
+prom_cc
+
+#Proteínas con CC = 1?
+prot_cc <- (transitivity (yeast, type = "local"))
+#Any patra que no salga toda la lista
+any (prot_cc == 1) #Sí hay proteínas con CC = 1
+
+```
+Con un total de 2617 nodos y 11855 conexiones, yeast se trata de una base de datos bastante compleja, característico de las interacciones proteína-proteína (PPI). Por esto, al aplicar las funciones de deleción, se optó por seleccionar un número alto (400) para las iteraciones, borrando nodos tanto con más conexiones y los nodos seleccionados al azar. De estos resultados se ve que la distancia promedio aumenta más al utilizar la función `delecion_conect`, pues esta función elige a los hubs, que son nodos altamente conectados, por lo que al borrarlos, es más probable que la red se fragmente, aumentando así la distancias promedios debido a la pérdida de conexiones. Por otro lado,  la función `delecion_sucesiva` elige qué nodos eliminar aleatoriamente, por lo que hay una probabilidad más baja de seleccionar nodos clave (hubs) cuando estos son eliminados, resultando en un menor impacto en la distancia promedio.
+
 
 4.  **Redes biológicas**
 
 Ve a al [Network Repository](https://networkrepository.com/bn-mouse-visual-cortex-1.php) y descarga la red en formato lista de adyacencia. Explica que representam los nodos y las conectividades.
 
 Escribe código que resuelva lo siguiente:
-
 -   Cargue y genere una gráfica en `igraph`.
+```{r}
+#Cargar archivo edges
+
+mouse <- read.graph("C:/Users/julie/OneDrive/Escritorio/R/Genómica Funcional/Tarea 4/Data/bn-mouse_visual-cortex_1.edges")
+
+#Gráfica
+plot (mouse, main = "Gráfica MOUSE")
+
+```
+
 -   Genera la gráfica con todos los layouts disponibles.
+```{r}
+
+#Caclculo para cada layout
+layouts <- list ( 
+  layout_with_fr (mouse), layout_in_circle(mouse), layout_on_sphere(mouse),   
+  layout_randomly(mouse),layout_with_kk(mouse),layout_as_tree(mouse),layout_with_dh(mouse),
+  layout_with_lgl(mouse),layout_with_mds(mouse),layout_with_gem(mouse) )
+
+#Lista de nombres 
+nombre_layout <- c("f-r","circle","sphere", "randomly","k-k", "tree",
+                   "d-h","lgl","mds","gem")
+
+#ciclo for para grafica r
+for (i in length(layouts)) {
+  plot (mouse, layout = layouts[[i]],  #Doble corchete pq sino no funciona
+        main = paste ("Layout", nombre_layout[i])) #paste porque cat imprime en consola
+}
+
+
+```
+
+
 -   Grafica la red con al menos tres medidas de centralidad.
+
+```{r}
+
+```
+
+
+
 -   ¿Qué tan densa es la red?
+```{r}
+edge_density(mouse)
+
+```
+
 -   Clusteriza la red con al menos tres métodos de clusterización. Gráfica la red con esos métodos.
+
+
 
 Explica tus resultados.
 
@@ -218,7 +508,26 @@ Construye dos redes:
 -   Una red aleatoria tipo Erdos-Rényi.
 -   Una red tipo "scale-free" usando el modelo Barabási–Albert.
 
+```{r}
+#Erdos-Rényi
+g_er <- sample_gnp (100, p = 0.04)
+#Scale-free, 
+g_ba <- sample_pa (100 , directed = FALSE)
+
+```
+
+
 Para ambas redes:
 
 -   Compara su grado promedio, distribución de grados, coeficiente de clusterización y diámetro.\
+
+```{r}
+comparacion <- function
+
+
+```
+
+
 -   Interpreta las diferencias en el contexto de redes biológicas.
+
+
