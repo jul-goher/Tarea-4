@@ -449,6 +449,7 @@ plot (mouse, main = "Gráfica MOUSE")
 ```
 
 -   Genera la gráfica con todos los layouts disponibles.
+
 ```{r}
 
 #Caclculo para cada layout
@@ -474,8 +475,7 @@ for (i in length(layouts)) {
 -   Grafica la red con al menos tres medidas de centralidad.
 
 ```{r}
-
-
+#Medidas de centralidad: betweeness, 
 
 
 ```
@@ -525,8 +525,22 @@ Para ambas redes:
 -   Compara su grado promedio, distribución de grados, coeficiente de clusterización y diámetro.\
 
 ```{r}
-comparacion <- function
 
+comparacion <- function(graf) {
+  g_prom <- mean(degree(graf, mode = "all"))
+  g_dist <- degree_distribution(graf) 
+  cc <- transitivity(graf, type = "average") #supongo que en este caso el promedio e smejor que el local 
+  diam <- diameter(graf)
+  #Visualizar 
+  cat("Grado promedio:", g_prom, "\n")
+  cat("Distribución de grados:", g_dist, "\n")
+  cat("Coeficiente de clusterización promedio:", cc, "\n")
+  cat("Diámetro de la red:", diam, "\n")
+}
+
+
+comparacion(g_er)
+comparacion(g_ba)
 
 ```
 
