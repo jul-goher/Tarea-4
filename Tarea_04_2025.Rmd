@@ -572,23 +572,14 @@ for (i in 1:length(layouts)) {
 
 -   Grafica la red con al menos tres medidas de centralidad.
 ```{r}
-d_mouse <- degree(mouse, mode = "all") #supongo que all?
+d_mouse <- degree(mouse, mode = "all") #supongo que all
 bet_mouse <- betweenness(mouse, directed = TRUE)
 close_mouse <- closeness(mouse, mode = "all") #all como en el degree
 
 
 #plot(d_mouse, main = "Centralidad: degree") corre, pero muestra en puntos la gráfica
 
-
-plot(mouse, 
-     layout = layout_with_fr(mouse),
-     main = "Betweenness Centrality",
-     vertex.size = bet_mouse)
-
-plot(mouse, 
-     layout = layout_with_fr(mouse),
-     main = "Closeness Centrality",
-     vertex.size = close_mouse)
+#Código: https://www.datacamp.com/tutorial/centrality-network-analysis-R
 
 
 ```
@@ -603,8 +594,6 @@ edge_density(mouse)
 -   Clusteriza la red con al menos tres métodos de clusterización. Gráfica la red con esos métodos.
 
 
-
-Explica tus resultados.
 
 5.  **Red de coexpresión simulada**
 
