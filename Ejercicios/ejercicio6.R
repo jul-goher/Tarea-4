@@ -1,15 +1,17 @@
 #### Ejericico 6
 ##Gráficas
+library(igraph)
+library(igraphdata)
 #Erdos-Rényi
-g_er <- sample_gnp (100, p = 0.04)
+g_er <- sample_gnp (100, p = 0.3)
 #Scale-free, 
 g_ba <- sample_pa (100 , directed = FALSE)
 
 ##Fincion
 comparacion <- function (graf) {
   g_prom <- degree(graf, mode = "local")
-  sapply ( graf, function(promedio) degree(graf, mode = "local")/degree(graf, mode = "local") ) )
-  cc <- transitivy(graf, mode = "local"))
+  sapply ( graf, function(promedio) degree(graf, mode = "local")/degree(graf, mode = "local") )
+  cc <- transitivy(graf, mode = "local")
   diam <- diameter(graf)
   d_distrib <- degree_distribution(graf)
   paste()
@@ -25,8 +27,8 @@ comparacion <- function(graf) {
 
   cat("Grado promedio:", g_prom, "\n")
   cat("Distribución de grados:", g_dist, "\n")
-  cat("Coeficiente de clusterización promedio:", cc, "\n")
-  cat("Diámetro de la red:", diam, "\n")
+  cat("CC promedio:", cc, "\n")
+  cat("Diámetro:", diam, "\n")
 }
 
 comparacion(g_er)
